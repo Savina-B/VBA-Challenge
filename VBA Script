@@ -1,0 +1,148 @@
+Option Explicit
+Sub forLoop()
+    'Variables
+    Dim ticker As String
+    Dim lastDataRow As Long
+    Dim summaryRow As Long
+    Dim inputRow As Long
+    Const firstDataRow As Integer = 2
+    Const tickerColumn As Integer = 1
+    Dim openingPrice As Double
+    Dim closingPrice As Double
+    Dim yearlyChange As Double
+    Dim percentChange As Double
+    Dim totalVolume As Double
+    
+    
+    
+    'Variable values
+    openingPrice = 0
+    closingPrice = 0
+    yearlyChange = 0
+    percentChange = 0
+    totalVolume = 0
+    lastDataRow = Cells(Rows.Count, tickerColumn).End(xlUp).Row
+    summaryRow = firstDataRow
+    
+    'Headers for Summary Row
+    Range("I1").Value = "Ticker"
+    Range("J1").Value = "Yearly Change"
+    Range("K1").Value = "Percent Change"
+    Range("L1").Value = "Total Volume"
+    
+    'Loop through each ticker row
+    For inputRow = firstDataRow To lastDataRow
+        'If a new ticker sympol appears
+        If Cells(inputRow, tickerColumn).Value <> ticker Then
+            'New output summary
+            If ticker <> "" Then
+                Range("I" & summaryRow).Value = ticker
+                Range("J" & summaryRow).Value = yearlyChange
+                Range("K" & summaryRow).Value = Format(percentChange, "0.00%")
+                Range("L" & summaryRow).Value = totalVolume
+                'variables for next ticker
+                openingPrice = 0
+                closingPrice = 0
+                yearlyChange = 0
+                percentChange = 0
+                totalVolume = 0
+                summaryRow = summaryRow + 1
+            End If
+            'Ticker and opening price for new ticker
+            ticker = Cells(inputRow, tickerColumn).Value
+            openingPrice = Cells(inputRow, 3).Value
+        End If
+        
+        'Closing price and total volume
+        closingPrice = Cells(inputRow, 6).Value
+        totalVolume = totalVolume + Cells(inputRow, 7).Value
+        
+        'Yearly and percent change calculations
+        If openingPrice <> 0 Then
+            yearlyChange = closingPrice - openingPrice
+            percentChange = yearlyChange / openingPrice
+        End If
+    Next inputRow
+    
+    'Ticker symbol, yearly change, percentage change and total volume for last ticker
+    Range("I" & summaryRow).Value = ticker
+    Range("J" & summaryRow).Value = yearlyChange
+    Range("K" & summaryRow).Value = Format(percentChange, "0.00%")
+    Range("L" & summaryRow).Value = totalVolume
+    
+    'Output greatest % increase, % decrease, and total volume
+    Dim maxIncrease As Double
+    Dim maxDecrease As Double
+    Dim maxVolume As Double
+    Dim maxIncreaseTicker As String
+    Dim maxDecreaseTicker As String
+    Dim maxVolumeTicker As String
+    Dim summaryLastRow As String
+    
+    
+    'variable values
+    maxIncrease = 0
+    maxDecrease = 0
+    maxVolume = 0
+    summaryLastRow = Cells(Rows.Count, 9).End(xlUp).Row
+
+    'Find greatest % increase, greatest % decrease, and greatest total volume in summary tabledone before
+    For inputRow = 2 To summaryLastRow
+    'Greatest % increase
+    If Cells(inputRow, 11).Value > maxIncrease Then
+        maxIncrease = Cells(inputRow, 11).Value
+        maxIncreaseTicker = Cells(inputRow, 9).Value
+    End If
+    
+    'Greatest % decrease
+    If Cells(inputRow, 11).Value < maxDecrease Then
+        maxDecrease = Cells(inputRow, 11).Value
+        maxDecreaseTicker = Cells(inputRow, 9).Value
+    End If
+    
+    'Greatest total volume
+    If Cells(inputRow, 12).Value > maxVolume Then
+        maxVolume = Cells(inputRow, 12).Value
+        maxVolumeTicker = Cells(inputRow, 9).Value
+    End If
+Next inputRow
+
+    'Summary table for greatest % increase, greatest % decrease and greatest total volume
+    Range("O2").Value = "Greatest % Increase"
+    Range("O3").Value = "Greatest % Decrease"
+    Range("O4").Value = "Greatest Total Volume"
+    Range("P1").Value = "Ticker"
+    Range("Q1").Value = "Value"
+    Range("P2").Value = maxIncreaseTicker
+    Range("Q2").Value = Format(maxIncrease, "0.00%")
+    Range("P3").Value = maxDecreaseTicker
+    Range("Q3").Value = Format(maxDecrease, "0.00%")
+    Range("P4").Value = maxVolumeTicker
+    Range("Q4").Value = maxVolume
+
+    'Set variables
+    lastDataRow = Cells(Rows.Count, 1).End(xlUp).Row
+
+    'Conditional formatting for positive and negative yearly changes
+    Range("J2:J" & summaryLastRow).FormatConditions.Delete
+    With Range("J2:J" & summaryLastRow).FormatConditions.Add(Type:=xlCellValue, Operator:=xlGreaterEqual, Formula1:="0")
+        .Interior.ColorIndex = 4
+    End With
+    With Range("J2:J" & summaryLastRow).FormatConditions.Add(Type:=xlCellValue, Operator:=xlLess, Formula1:="0")
+        .Interior.ColorIndex = 3
+    End With
+
+   Dim ws As Worksheet
+    Dim ApplyConditionalFormatting As FormatCondition
+    
+    'Loop through each worksheet in workbook
+    For Each ws In Worksheets
+        'Activate worksheet
+        ws.Activate
+        Call ApplyConditionalFormatting
+    Next ws
+
+    
+    
+    End Sub
+    
