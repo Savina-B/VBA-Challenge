@@ -10,3 +10,6 @@ In columns O, P and Q the greatest percentage increase, greatest percentage decr
 Part of the challenge was to loop the script through worksheets, which I was unable to do.
 
 Aid was received from Tutor, research on StackOverflow and research from previous similar examples. 
+![image](https://user-images.githubusercontent.com/130323046/236265520-bc78cdf0-ea99-4c1d-baf8-7c3c7d14aa7c.png)
+![image](https://user-images.githubusercontent.com/130323046/236267027-d3d059d6-f865-43c5-a015-7fb4ca805b39.png)
+
