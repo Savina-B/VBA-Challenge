@@ -1,5 +1,18 @@
 Option Explicit
+
+   
+
 Sub forLoop()
+
+Dim ws As Worksheet
+    
+    
+ 'Loop through each worksheet in workbook
+    For Each ws In ThisWorkbook.Worksheets
+        
+    'Activate worksheet
+    ws.Activate
+        
     'Variables
     Dim ticker As String
     Dim lastDataRow As Long
@@ -12,7 +25,7 @@ Sub forLoop()
     Dim yearlyChange As Double
     Dim percentChange As Double
     Dim totalVolume As Double
-    
+    Dim ApplyConditionalFormatting As FormatCondition
     
     
     'Variable values
@@ -132,17 +145,11 @@ Next inputRow
         .Interior.ColorIndex = 3
     End With
 
-   Dim ws As Worksheet
-    Dim ApplyConditionalFormatting As FormatCondition
-    
-    'Loop through each worksheet in workbook
-    For Each ws In Worksheets
-        'Activate worksheet
-        ws.Activate
-        Call ApplyConditionalFormatting
+   
+'Call ApplyConditionalFormatting
     Next ws
-
     
     
     End Sub
     
+
